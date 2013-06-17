@@ -57,6 +57,9 @@ def load_tweets():
 
     return updates
 
+def index2():
+    return dict()
+
 
 def user():
     """

@@ -1,0 +1,179 @@
+*, body {margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif;}
+
+#header {
+	height: 150px;
+	background-color: #000;
+}
+
+#logo {
+	margin: 40px 60px;
+}
+
+#navigate {
+	height: 100px;
+	margin-top: 25px;
+	float: right;
+	background-color: #f9f9f9;
+	border-left: 3px solid #ffcc00;
+}
+
+#navigate ul {
+	list-style: none;
+}
+
+#navigate ul li {
+	padding-top: 3px;
+	padding-left: 0;
+	color: #999;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+#navigate ul li a {
+	text-decoration: none;
+	font-size: 20px;
+	color: #663300;
+	font-weight: normal;
+	-moz-transition: color 0.5s ease-in 0s;
+    -webkit-transition:color 0.5s ease-in 0s;
+}
+
+#navigate ul li a:hover {
+	color: #cc9900;
+}
+
+#hashfield {
+	height: 80px;
+	padding: 10px 20px;
+	background-color: #ffff99;
+}
+
+.hash_title {
+	padding: 10px 0;
+	font-size: 16px;
+	color: #000;
+}
+
+.hash_body a {
+	text-decoration: none;
+	font-size: 18px;
+	font-weight: bold;
+	color: #336600;
+	line-height: 28px;
+	-moz-transition: color 0.5s ease-in 0s;
+   	-webkit-transition:color 0.5s ease-in 0s;
+}
+
+.hash_body a:hover {
+	color: #003300;
+}
+
+#count_info {
+	height: 60px;
+	background-color: #ffffcc;
+	color: #000;
+}
+
+.count_title {
+	font-size: 40px;
+	font-weight: bold;
+	padding: 25px 20px;
+}
+
+.count_body {
+	float: right;
+	text-align: right;
+	padding: 10px 20px;
+	font-size: 14px;
+}
+
+.tweet_body {
+	height: 100px;
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+}
+
+.tweet_avatar {
+	width: 50px;
+	height: 50px;
+	padding: 25px 35px;
+}
+
+.tweet_content {
+	padding: 18px 25px;
+	float: left;
+}
+
+.tweet_content p {
+	font-size: 16px;
+	color: #333;
+}
+
+.tweet_content a {
+	text-decoration: none;
+	font-size: 13px;
+	color: #999;
+	-moz-transition: color 0.5s ease-in 0s;
+    -webkit-transition:color 0.5s ease-in 0s;
+}
+
+.tweet_content a:hover {
+	color: #006600;
+}
+
+.tweet_time {
+	float: right;
+	font-size: 13px;
+	color: #999;
+}
+
+.btn_align {
+	margin: 15px auto;
+}
+
+#description_boxes {
+	height: 245px;
+	background-color: #f2f2f2;
+}
+
+.desc_box {
+	padding-left: 30px;
+}
+
+.desc_box p {
+	font-size: 14px;
+	color: #333;
+	padding-left: 20px;
+	column-count:2;
+	-moz-column-count:2;
+	-webkit-column-count:2;
+	-o-column-count:2;
+}
+
+.desc_box h1 {
+	padding-left: 20px;
+	border-bottom: 2px solid #ffcc00;
+	font-size: 18px;
+	font-weight: normal;
+	color: #996600;
+}
+
+.feedback {
+	padding-left: 50px;
+}
+
+.feedback h1 {
+	padding-left: 20px;
+	border-bottom: 2px solid #ffcc00;
+	font-size: 18px;
+	font-weight: normal;
+	color: #996600;
+}
+
+#footer {
+	height: 45px;
+	background-color: #ccff99;
+	font-size: 14px;
+	color: #666;
+	padding-top: 22px;
+}
