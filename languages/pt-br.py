@@ -22,6 +22,7 @@
 'Cache': 'Cache',
 'Cache Keys': 'Cache Keys',
 'Cannot be empty': 'Não pode ser vazio',
+'carregar mais updates': 'carregar mais updates',
 'change password': 'modificar senha',
 'Check to delete': 'Marque para apagar',
 'Clear CACHE?': 'Clear CACHE?',
