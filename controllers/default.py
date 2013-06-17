@@ -11,15 +11,51 @@
 
 
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
+    return dict()
 
-    if you need a simple wiki simple replace the two lines below with:
-    return auth.wiki()
-    """
-    response.flash = T("Welcome to web2py!")
-    return dict(message=T('Hello World'))
+
+@service.json
+def load_tweets():
+    if request.vars.current_id:
+        from twython import Twython, TwythonError
+        from tokens import tokens
+        from datetime import datetime
+
+        twitter = tokens("twitter")
+        APP_KEY = twitter["APP_KEY"]
+        APP_SECRET = twitter["APP_SECRET"]
+        OAUTH_TOKEN = twitter["OAUTH_TOKEN"]
+        OAUTH_TOKEN_SECRET = twitter["OAUTH_TOKEN_SECRET"]
+
+        # Requires Authentication as of Twitter API v1.1
+        twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+        search = 'protestabrasil'
+
+        try:
+            if request.vars.current_id == "0":
+                search_results = twitter.search(q=search, count=10)
+            else:
+                current_id = int(request.vars.current_id,10)
+                # Margin to correct. Sometimes strangely repeated the last result
+                current_id -= 100
+                search_results = twitter.search(q=search, count=5, max_id=current_id)
+        except TwythonError as e:
+            print e
+
+        updates = []
+        post = {}
+
+        for tweet in search_results['statuses']:
+            post["avatar"] = tweet['user']['profile_image_url']
+            post["user"] = '%s @%s' % (tweet['user']['name'].encode('utf-8'), tweet['user']['screen_name'].encode('utf-8'))
+            date = datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')
+            post["created_at"] = prettydate(date,T)
+            post["text"] = tweet['text'].encode('utf-8')
+            post["location"] = tweet['user']['location'].encode('utf-8')
+            post["id_str"] = tweet["id_str"]
+            updates.append(post.copy())
+
+    return updates
 
 
 def user():

@@ -1,35 +1,57 @@
-{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 
-{{if 'message' in globals():}}
-<h3>{{=message}}</h3>
+    <div id="tweets_timeline" class="container">
+        <!-- twitts inside here -->
+    </div>
+    <br>
+    <br>
+    <br>
+    <button id="more_tweets" class="btn btn-success">{{=T("Load more updates")}}</button>
 
-<h4>{{=T('How did you get here?')}}</h4>
-<ol>
-  <li>{{=T('You are successfully running web2py')}}</li>
-  <li>{{=XML(T('You visited the url %s', A(request.env.path_info,_href=request.env.path_info)))}}</li>
-  <li>{{=XML(T('Which called the function %s located in the file %s',
-             (A(request.function+'()',_href='#'),
-              A('web2py/applications/%(application)s/controllers/%(controller)s.py'%request,
-               _href=URL('admin','default','peek', args=(request.application,'controllers',request.controller+'.py'))))))}}</li>
-  <li>{{=XML(T('The output of the file is a dictionary that was rendered by the view %s',
-           A('web2py/applications/%(application)s/views/%(controller)s/index.html'%request,
-           _href=URL('admin','default','peek',args=(request.application,'views',request.controller,'index.html')))))}}</li>
-  <li>{{=T('You can modify this application and adapt it to your needs')}}</li>
-</ol>
-{{elif 'content' in globals():}}
-{{=content}}
-{{else:}}
-{{=BEAUTIFY(response._vars)}}
-{{pass}}
 
-{{block right_sidebar}}
-{{=A(T("Administrative Interface"), _href=URL('admin','default','index'), _class='btn',
-     _style='margin-top: 1em;')}}
-<h6>{{=T("Don't know what to do?")}}</h6>
-<ul>
-  <li>{{=A(T("Online examples"), _href=URL('examples','default','index'))}}</li>
-  <li><a href="http://web2py.com">web2py.com</a></li>
-  <li><a href="http://web2py.com/book">{{=T('Documentation')}}</a></li>
-</ul>
-{{end}}
+<script>
+    ;(function($){
+        var loadingURL = '{{=URL("static","images/ajax-loader.gif")}}',
+            $tweets_timeline = $("#tweets_timeline"),
+            $more_tweets = $("#more_tweets"),
+
+        sendAjax = function(current_id) {
+            $tweets_timeline.append('<img id="loading" src="' + loadingURL + '" alt="">');
+
+            $.ajax({
+                type: "GET",
+                url: '{{=URL(r=request,f="call",args=["json","load_tweets"])}}',
+                data: {current_id: current_id},
+                dataType: "json",
+                success: function(data){
+
+                    var html = '',
+                        lenData = data.length - 1;
+                    for( var i = 0; i <= lenData; i++ ) {
+                        html += '<img src="' + data[i]["avatar"] + '" alt=""><h5>' + data[i]["user"] + ' ' + data[i]["created_at"] +' - ' + data[i]["location"] + '</h5><h6>' + data[i]["text"] + '</h6>';
+                    }
+                    $("#loading").remove();
+                    $tweets_timeline.append(html);
+                    $more_tweets.attr("data-currentid", data[lenData]["id_str"]);
+
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            });
+        }
+
+
+        // call ajax
+        sendAjax(0);
+
+        $("#more_tweets").on("click", function() {
+            var current_id = parseInt($(this).attr("data-currentid"),10);
+                console.log(current_id);
+
+            sendAjax(current_id);
+        });
+
+    })(jQuery);
+
+</script>
