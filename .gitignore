@@ -15,3 +15,5 @@ errors/*
 sessions/*
 cache/*
 uploads/*
+
+modules/tokens.py
