@@ -36,7 +36,7 @@
         </div>
 
         <div class="span10 hash_body">
-            <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a> <a href="#">#hashtag1</a>
+            <a href="#" class="hashtags">#SemViolência</a> <a href="#" class="hashtags">#VemPraRua</a> <a href="#" class="hashtags">#protestorj</a> <a href="#" class="hashtags">#ChangeBrazil</a> <a href="#" class="hashtags">#protestorio</a> <a href="#" class="hashtags">#ProtestaBrasil</a> <a href="#" class="hashtags">#BrasilAcordou</a> <a href="#" class="hashtags">#protestobr</a> <a href="#" class="hashtags">#MOBajuda</a> <a href="#" class="hashtags">#TodaRevoluçaoComeçaComUmaFaísca</a> <a href="#" class="hashtags">#NãoSãoSó20Centavos</a> <a href="#" class="hashtags">#VemPraJanela</a> <a href="#" class="hashtags">#SemViolência</a>
         </div>
     </div>
 </div>
@@ -132,16 +132,18 @@
     <script>
         ;(function($){
             var loadingURL = '{{=URL("static","images/ajax-loader.gif")}}',
+                $body = $('body'),
+                hashtag = $body.data('hashtags', '#protestabrasil'),
                 $tweets_timeline = $("#tweets_timeline"),
-                $more_tweets = $("#more_tweets"),
+                $more_tweets = $("#more_tweets");
 
-            sendAjax = function(current_id) {
+            sendAjax = function(current_id, hashtag) {
                 $tweets_timeline.append('<img id="loading" src="' + loadingURL + '" alt="">');
 
                 $.ajax({
                     type: "GET",
                     url: '{{=URL(r=request,f="call",args=["json","load_tweets"])}}',
-                    data: {current_id: current_id},
+                    data: {current_id: current_id, hashtag: hashtag},
                     dataType: "json",
                     success: function(data){
 
@@ -165,13 +167,23 @@
 
 
             // call ajax
-            sendAjax(0);
+            hashtag = $body.data('hashtags');
+            sendAjax(0, hashtag);
 
             $("#more_tweets").on("click", function() {
                 var current_id = parseInt($(this).attr("data-currentid"),10);
-                    console.log(current_id);
+                hashtag = $body.data('hashtags');
 
-                sendAjax(current_id);
+                sendAjax(current_id, hashtag);
+            });
+
+            $(".hashtags").on("click", function(event) {
+                event.preventDefault();
+                $body.data('hashtags', $(this).text())
+                hashtag = $body.data('hashtags');
+                $tweets_timeline.empty();
+
+                sendAjax(0, hashtag);
             });
 
         })(jQuery);
