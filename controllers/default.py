@@ -47,7 +47,8 @@ def load_tweets():
 
         for tweet in search_results['statuses']:
             post["avatar"] = tweet['user']['profile_image_url']
-            post["user"] = '%s @%s' % (tweet['user']['name'].encode('utf-8'), tweet['user']['screen_name'].encode('utf-8'))
+            post["user"] = '%s' % tweet['user']['name'].encode('utf-8')
+            post["username"] = '@%s' % tweet['user']['screen_name'].encode('utf-8')
             date = datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')
             post["created_at"] = prettydate(date,T)
             post["text"] = tweet['text'].encode('utf-8')
