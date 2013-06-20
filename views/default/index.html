@@ -127,6 +127,7 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src={{=URL("static","js/jquery.min.js")}}><\/script>')</script>
+    <script src='{{=URL("static","js/urlize.js")}}'></script>
 
     <script>
         ;(function($){
@@ -145,9 +146,11 @@
                     success: function(data){
 
                         var html = '',
+                            text = '';
                             lenData = data.length - 1;
                         for( var i = 0; i <= lenData; i++ ) {
-                            html += '<img src="' + data[i]["avatar"] + '" alt=""><h5>' + data[i]["user"] + ' ' + data[i]["created_at"] +' - ' + data[i]["location"] + '</h5><h6>' + data[i]["text"] + '</h6>';
+                            text = urlize(data[i]["text"], {nofollow: true, autoescape: true, target: "_blank"});
+                            html += '<img src="' + data[i]["avatar"] + '" alt=""><h5>' + data[i]["user"] + ' ' + data[i]["created_at"] +' - ' + data[i]["location"] + '</h5><h6>' + text + '</h6>';
                         }
                         $("#loading").remove();
                         $tweets_timeline.append(html);
