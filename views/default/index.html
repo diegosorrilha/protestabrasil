@@ -21,10 +21,10 @@
 
         <div class="span6" id="navigate">
             <ul>
-            <li>navegue por:</li>
+            <li>{{=T("browse by")}}:</li>
             <li><a href="#">TWEETS + UPDATES</a></li>
-            <li><a href="#">IMAGENS</a></li>
-            <li><a href="#">VÍDEOS</a></li>
+            <li><a href="#">{{=T("IMAGES")}}</a></li>
+            <li><a href="#">{{=T("VIDEOS")}}</a></li>
             </ul>
         </div>
     </div>
@@ -33,7 +33,7 @@
 <div class="row-fluid">
     <div class="span12" id="hashfield">
         <div class="span2 hash_title">
-            Hashtags principais sendo monitoradas:
+            {{=T("Hashtags main being monitored")}}:
         </div>
 
         <div class="span10 hash_body">
@@ -45,7 +45,7 @@
 <div class="row-fluid">
     <div class="span12" id="count_info">
         <div class="span2 count_title">
-            TUDO
+            {{=T("ALL")}}
         </div>
 
         <div class="span10 count_body">
@@ -118,29 +118,52 @@
             var loadingURL = '{{=URL("static","images/ajax-loader.gif")}}',
                 $body = $('body'),
                 hashtag = '',
+                current_id = '',
                 $tweets_timeline = $("#tweets_timeline"),
                 $more_tweets = $("#more_tweets");
 
-            sendAjax = function(current_id, hashtag, home_data) {
-                $tweets_timeline.append('<br><center><img id="loading" src="' + loadingURL + '" alt=""></center>');
+            sendAjax = function(options) {
+                if(options["verify_update"] === undefined) {
+                    // for click old updates
+                    $tweets_timeline.append('<center id="loading"><br><img src="' + loadingURL + '" alt=""></center>');
+                } else {
+                    // for automatic new updates
+                    $tweets_timeline.prepend('<center id="loading"><br><img src="' + loadingURL + '" alt=""></center>');
+                }
 
                 $.ajax({
                     type: "GET",
                     url: '{{=URL(r=request,f="call",args=["json","load_tweets"])}}',
-                    data: {current_id: current_id, hashtag: hashtag, home_data: home_data},
+                    data: {current_id: options["current_id"], hashtag: options["hashtag"], all_hashtags: options["all_hashtags"], verify_update: options["verify_update"]},
                     dataType: "json",
                     success: function(data){
-
-                        var html = '',
-                            text = '';
-                            lenData = data.length - 1;
-                        for( var i = 0; i <= lenData; i++ ) {
-                            text = urlize(data[i]["text"], {nofollow: true, autoescape: true, target: "_blank"});
-                            html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="http://twitter.com/' + data[i]["username"] + '" target="_blank" class="username_link" >@' +data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + text + '</p></div></div></div>';
-                        }
                         $("#loading").remove();
-                        $tweets_timeline.append(html);
-                        $more_tweets.attr("data-currentid", data[lenData]["id_str"]);
+                        if (data === false) {
+                            return
+
+                        } else {
+                            var html = '',
+                                text = '';
+                                lenData = data.length - 1;
+                            for( var i = 0; i <= lenData; i++ ) {
+                                text = urlize(data[i]["text"], {nofollow: true, autoescape: true, target: "_blank"});
+                                html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="http://twitter.com/' + data[i]["username"] + '" target="_blank" class="username_link" >@' +data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + text + '</p></div></div></div>';
+                            }
+                            // this is for the effect fadein for new tweets
+                            var $html = $(html).hide()
+                            $more_tweets.attr("data-lessid", data[lenData]["id_str"]);
+                            $body.attr("data-biggerid", data[0]["id_str"]);
+                            // for click old updates
+                            if(lenData > 1) {
+                                $tweets_timeline.append($html);
+
+                            // for automatic new updates
+                            } else {
+                                $tweets_timeline.prepend($html);
+
+                            }
+                            $html.fadeIn('slow');
+                        }
 
                     },
                     error: function(data){
@@ -149,32 +172,71 @@
                 });
             }
 
-
-            // call ajax
-            var index_hastags = "";
+            // FOR HOME ALL HASHTAGS
             $(".hashtags").each(function(){
-                index_hastags += "+" + $(this).text();
+                hashtag += "+" + $(this).text();
             });
-            // console.log(index_hastags);
-            sendAjax(0, index_hastags, true);
+            // insert current hashtag
+            $body.data('hashtags', hashtag)
+            $body.data('all_hashtags', true)
+            // call ajax
+            // sendAjax(0, hashtag, true);
+            var options = {
+                current_id : 0,
+                hashtag : hashtag,
+                all_hashtags : true,
+            }
+            sendAjax(options);
 
+            // MORE UPDATES BUTTON
             $("#more_tweets").on("click", function() {
-                var current_id = $(this).attr("data-currentid");
+                current_id = $(this).attr("data-lessid");
+                // insert current hashtag
                 hashtag = $body.data('hashtags');
-
-                sendAjax(current_id, hashtag);
+                all_hashtags = $body.data('all_hashtags');
+                // call ajax
+                var options = {
+                    current_id : current_id,
+                    hashtag : hashtag,
+                    all_hashtags : all_hashtags,
+                }
+                sendAjax(options);
             });
 
+            // HASHTAGS LINK
             $(".hashtags").on("click", function(event) {
                 event.preventDefault();
-                var text = $(this).text();
-                $(".count_title").text(text);
-                $body.data('hashtags', text)
-                hashtag = $body.data('hashtags');
-                $tweets_timeline.empty();
-
-                sendAjax(0, hashtag);
+                hashtag = $(this).text();
+                $(".count_title").text(hashtag);
+                // insert current hashtag
+                $body.data('hashtags', hashtag)
+                $body.data('all_hashtags', false)
+                $tweets_timeline.fadeOut("slow");
+                // call ajax
+                var options = {
+                    current_id : 0,
+                    hashtag : hashtag,
+                    all_hashtags : false,
+                }
+                setTimeout(function(){
+                    $tweets_timeline.fadeIn().empty();
+                    sendAjax(options);
+                },500);
             });
+
+            setInterval(function(){
+                current_id = $body.attr("data-biggerid");
+                hashtag = $body.data('hashtags')
+                all_hashtags = $body.data('all_hashtags');
+                // call ajax
+                var options = {
+                    current_id : current_id,
+                    hashtag : hashtag,
+                    all_hashtags : all_hashtags,
+                    verify_update : true,
+                }
+                sendAjax(options);
+            },30000);
 
         })(jQuery);
 

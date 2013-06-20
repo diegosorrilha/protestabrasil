@@ -29,21 +29,51 @@ def load_tweets():
 
         # Requires Authentication as of Twitter API v1.1
         twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-        search = request.vars.hashtag
 
         try:
-            if request.vars.current_id == "0" and request.vars.home_data == "true":
-                search = request.vars.hashtag.split("+")[1:]
-                search = " OR ".join(search)
-                search_results = twitter.search(q=search, count=10, result_type="popular")
+            # Margin to correct. Sometimes strangely repeated the last result
+            current_id = request.vars.current_id
+            search = request.vars.hashtag
+            all_hashtags = request.vars.all_hashtags
+            verify_update = request.vars.verify_update
+            print "id >%s search >%s all_hashtags >%s verify_update >%s" %(request.vars.current_id,request.vars.hashtag,request.vars.all_hashtags, request.vars.verify_update)
 
-            elif request.vars.current_id == "0":
-                search_results = twitter.search(q=search, count=10)
+            if all_hashtags == "true":
+                search = search.split("+")[1:]
+                search = " OR ".join(search)
+
+                # initial
+                if current_id == "0":
+                    search_results = twitter.search(q=search, count=10, result_type="popular")
+
+                # check new tweets update
+                elif verify_update == "true":
+                    search_results = twitter.search(q=search, count=1, since_id=current_id)
+                    if len(search_results['statuses']) == 0:
+                        return False
+
+                # more search updates
+                else:
+                    current_id = int(request.vars.current_id,10) - 100
+                    search_results = twitter.search(q=search, count=5, max_id=current_id)
+
             else:
-                current_id = int(request.vars.current_id,10)
-                # Margin to correct. Sometimes strangely repeated the last result
-                current_id -= 100
-                search_results = twitter.search(q=search, count=5, max_id=current_id)
+                # initial
+                if current_id == "0":
+                    search_results = twitter.search(q=search, count=10)
+
+                # check new tweets update
+                elif verify_update == "true":
+                    search_results = twitter.search(q=search, count=1, since_id=current_id)
+                    # return False
+                    if len(search_results['statuses']) == 0:
+                        return False
+
+                # more search updates
+                else:
+                    current_id = int(request.vars.current_id,10) - 100
+                    search_results = twitter.search(q=search, count=5, max_id=current_id)
+
         except TwythonError as e:
             print e
 
@@ -61,10 +91,7 @@ def load_tweets():
             post["id_str"] = tweet["id_str"]
             updates.append(post.copy())
 
-    return updates
-
-def index2():
-    return dict()
+        return updates
 
 
 def user():
