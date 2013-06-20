@@ -112,7 +112,7 @@ body {margin: 0; padding: 0; height: 100%; font-family: Arial, Helvetica, sans-s
 	color: #333;
 }
 
-.tweet_content a {
+.username_link {
 	text-decoration: none;
 	font-size: 13px;
 	color: #999;

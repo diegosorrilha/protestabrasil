@@ -16,7 +16,7 @@ def index():
 
 @service.json
 def load_tweets():
-    if request.vars.current_id:
+    if request.vars.current_id and request.vars.hashtag:
         from twython import Twython, TwythonError
         from tokens import tokens
         from datetime import datetime
@@ -29,7 +29,7 @@ def load_tweets():
 
         # Requires Authentication as of Twitter API v1.1
         twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-        search = 'protestabrasil'
+        search = request.vars.hashtag
 
         try:
             if request.vars.current_id == "0":
