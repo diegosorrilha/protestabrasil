@@ -15,8 +15,9 @@
 
 <div class="row-fluid">
     <div class="span12" id="header">
-
-        <img src="{{=URL('static', 'images/protesta-brasil-logotipo.png')}}" alt="" id="logo">
+        <a href={{=URL("index")}} alt="ProtestaBrasil" title="ProtestaBrasil">
+            <img src="{{=URL('static', 'images/protesta-brasil-logotipo.png')}}" alt="" id="logo">
+        </a>
 
         <div class="span6" id="navigate">
             <ul>
@@ -116,17 +117,17 @@
         ;(function($){
             var loadingURL = '{{=URL("static","images/ajax-loader.gif")}}',
                 $body = $('body'),
-                hashtag = $body.data('hashtags', '#protestabrasil'),
+                hashtag = '',
                 $tweets_timeline = $("#tweets_timeline"),
                 $more_tweets = $("#more_tweets");
 
-            sendAjax = function(current_id, hashtag) {
+            sendAjax = function(current_id, hashtag, home_data) {
                 $tweets_timeline.append('<br><center><img id="loading" src="' + loadingURL + '" alt=""></center>');
 
                 $.ajax({
                     type: "GET",
                     url: '{{=URL(r=request,f="call",args=["json","load_tweets"])}}',
-                    data: {current_id: current_id, hashtag: hashtag},
+                    data: {current_id: current_id, hashtag: hashtag, home_data: home_data},
                     dataType: "json",
                     success: function(data){
 
@@ -135,7 +136,7 @@
                             lenData = data.length - 1;
                         for( var i = 0; i <= lenData; i++ ) {
                             text = urlize(data[i]["text"], {nofollow: true, autoescape: true, target: "_blank"});
-                            html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="http://twitter.com/' + data[i]["username"] + '" target="_blank" class="username_link" >@' +data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + data[i]["text"] + '</p></div></div></div>';
+                            html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="http://twitter.com/' + data[i]["username"] + '" target="_blank" class="username_link" >@' +data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + text + '</p></div></div></div>';
                         }
                         $("#loading").remove();
                         $tweets_timeline.append(html);
@@ -150,11 +151,15 @@
 
 
             // call ajax
-            hashtag = $body.data('hashtags');
-            sendAjax(0, hashtag);
+            var index_hastags = "";
+            $(".hashtags").each(function(){
+                index_hastags += "+" + $(this).text();
+            });
+            // console.log(index_hastags);
+            sendAjax(0, index_hastags, true);
 
             $("#more_tweets").on("click", function() {
-                var current_id = parseInt($(this).attr("data-currentid"),10);
+                var current_id = $(this).attr("data-currentid");
                 hashtag = $body.data('hashtags');
 
                 sendAjax(current_id, hashtag);
@@ -162,7 +167,9 @@
 
             $(".hashtags").on("click", function(event) {
                 event.preventDefault();
-                $body.data('hashtags', $(this).text())
+                var text = $(this).text();
+                $(".count_title").text(text);
+                $body.data('hashtags', text)
                 hashtag = $body.data('hashtags');
                 $tweets_timeline.empty();
 

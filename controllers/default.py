@@ -32,7 +32,12 @@ def load_tweets():
         search = request.vars.hashtag
 
         try:
-            if request.vars.current_id == "0":
+            if request.vars.current_id == "0" and request.vars.home_data == "true":
+                search = request.vars.hashtag.split("+")[1:]
+                search = " OR ".join(search)
+                search_results = twitter.search(q=search, count=10, result_type="popular")
+
+            elif request.vars.current_id == "0":
                 search_results = twitter.search(q=search, count=10)
             else:
                 current_id = int(request.vars.current_id,10)
