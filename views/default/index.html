@@ -111,6 +111,7 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src={{=URL("static","js/jquery.min.js")}}><\/script>')</script>
+    <script src='{{=URL("static","js/urlize.js")}}'></script>
 
     <script>
         ;(function($){
@@ -129,8 +130,10 @@
                     success: function(data){
 
                         var html = '',
+                            text = '';
                             lenData = data.length - 1;
                         for( var i = 0; i <= lenData; i++ ) {
+                            text = urlize(data[i]["text"], {nofollow: true, autoescape: true, target: "_blank"});
                             html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="#" target="_blank">' + data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + data[i]["text"] + '</p></div></div></div>';
                         }
                         $("#loading").remove();
