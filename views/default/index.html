@@ -136,7 +136,7 @@
                             lenData = data.length - 1;
                         for( var i = 0; i <= lenData; i++ ) {
                             text = urlize(data[i]["text"], {nofollow: true, autoescape: true, target: "_blank"});
-                            html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="#" target="_blank">' + data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + data[i]["text"] + '</p></div></div></div>';
+                            html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="#" target="_blank">' + data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + text + '</p></div></div></div>';
                         }
                         $("#loading").remove();
                         $tweets_timeline.append(html);
