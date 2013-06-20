@@ -76,8 +76,7 @@
         </div>
 
         <div class="span4 offset1 feedback">
-            <h1>FEEDBACK</h1>
-            Colocar UserVoice aqui!
+            <button class="btn btn-large btn-block btn-primary btn-warning" type="button" onClick="showClassicWidget()">{{=T('Feedback & Report Error')}}</button>
         </div>
     </div>
 </div>
@@ -134,7 +133,7 @@
                             lenData = data.length - 1;
                         for( var i = 0; i <= lenData; i++ ) {
                             text = urlize(data[i]["text"], {nofollow: true, autoescape: true, target: "_blank"});
-                            html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="#" target="_blank">' + data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + data[i]["text"] + '</p></div></div></div>';
+                            html += '<div class="row-fluid"><div class="span12 tweet_body"><div class="span1"><img src="' + data[i]["avatar"] + '" alt="" class="tweet_avatar"></div><div class="span11 tweet_content"><b>' + data[i]["user"] + '</b> <a href="http://twitter.com/' + data[i]["username"] + '" target="_blank">@' +data[i]["username"] + '</a><span class="tweet_time">' + data[i]["created_at"] + ' - ' + data[i]["location"] + '</span><p>' + data[i]["text"] + '</p></div></div></div>';
                         }
                         $("#loading").remove();
                         $tweets_timeline.append(html);
@@ -162,5 +161,24 @@
 
     </script>
 
+
+<!-- UserVoice JavaScript SDK (only needed once on a page) -->
+<script>(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/ApExOGxBxtiQbPfA14eAvA.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})()</script>
+
+<!-- A function to launch the Classic Widget -->
+<script>
+UserVoice = window.UserVoice || [];
+function showClassicWidget() {
+  UserVoice.push(['showLightbox', 'classic_widget', {
+    mode: 'full',
+    primary_color: '#a9cc62',
+    link_color: '#007dbf',
+    default_mode: 'feedback',
+    forum_id: 211520,
+    support_tab_name: 'Reporte um erro',
+    feedback_tab_name: 'Dê uma ideia!'
+  }]);
+}
+</script>
 </body>
 </html>

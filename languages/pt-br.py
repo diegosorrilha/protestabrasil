@@ -76,6 +76,7 @@
 'Errors': 'Errors',
 'export as csv file': 'exportar como um arquivo csv',
 'FAQ': 'FAQ',
+'Feedback & Report Error': 'Feedback & Report Error',
 'First name': 'First name',
 'Forgot username?': 'Forgot username?',
 'Forms and Validators': 'Forms and Validators',

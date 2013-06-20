@@ -163,14 +163,7 @@ body {margin: 0; padding: 0; height: 100%; font-family: Arial, Helvetica, sans-s
 
 .feedback {
 	padding-left: 50px;
-}
-
-.feedback h1 {
-	padding-left: 20px;
-	border-bottom: 2px solid #ffcc00;
-	font-size: 18px;
-	font-weight: normal;
-	color: #996600;
+	margin-top: 95px;
 }
 
 #footer {
